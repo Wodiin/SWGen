@@ -1,11 +1,17 @@
 import os
 import shutil
 import createpage
+import sys
 
 def main():
-    create_folder("public")
-    copy_folder_and_files("static", "public")
-    createpage.generate_pages_recursive("content", "template.html", "public")
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = "/"
+    
+    create_folder("docs")
+    copy_folder_and_files("static", "docs")
+    createpage.generate_pages_recursive("content", "template.html", "docs", basepath)
 
 
 def create_folder(folder_name):
