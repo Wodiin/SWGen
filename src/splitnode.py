@@ -12,6 +12,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             if len(parts) % 2 == 0:
                 raise ValueError("Invalid Markdown: Unmatched delimiter")
             for i, part in enumerate(parts):
+                if part == "":
+                    continue
                 if i % 2 == 0:
                     new_nodes.append(TextNode(part, TextType.TEXT))
                 else:
@@ -62,4 +64,26 @@ def split_nodes_link(old_nodes):
         else:
             new_nodes.append(node)
     return new_nodes
+
+
+def text_to_textnodes(text):
+    if text is None or text == "":
+        raise ValueError("Input text cannot be None or empty")
+    result = [TextNode(text, TextType.TEXT)]
+    result = split_nodes_image(result)
+    result = split_nodes_link(result)
+    result = split_nodes_delimiter(result, "**", TextType.BOLD)
+    result = split_nodes_delimiter(result, "_", TextType.ITALIC)
+    result = split_nodes_delimiter(result, "`", TextType.CODE_TEXT)
+    return result  
+
     
+def markdown_to_blocks(text):
+    return_list = []
+    blocks = text.split("\n\n")
+    blocks = [block.strip() for block in blocks]
+    for block in blocks:
+        if block == "":
+            continue
+        return_list.append(block)
+    return return_list
