@@ -1,10 +1,8 @@
 
-# This file defines the HtmlNode and LeafNode classes for representing HTML structures.
-# The HtmlNode class represents an HTML element with a tag, value, children, and properties. 
-# It includes a method to convert properties to HTML attributes and a placeholder for the to_html method, 
-# which must be implemented by subclasses. 
-# The LeafNode class represents a leaf node in the HTML structure, which contains a value, tag, and properties.
-# It implements the to_html method to generate the HTML representation of the leaf node.
+# This module defines the HtmlNode class and its subclasses LeafNode and ParentNode, which represent nodes in an HTML document structure.
+# The HtmlNode class serves as a base class for both leaf and parent nodes, containing common attributes such as tag, value, children, and props.
+# tag represents the HTML tag (e.g., "p", "b", "i"), value holds the text content for leaf nodes, children is a list of child nodes for parent nodes, and props is a dictionary of HTML attributes. 
+# The LeafNode class represents a node that contains a value and has no children, while the ParentNode class represents a node that can have children.
 
 
 class HtmlNode:
@@ -22,6 +20,11 @@ class HtmlNode:
             return ""
         return f" {' '.join(f'{key}=\"{value}\"' for key, value in self.props.items())}"
     
+    def __eq__(self, other):
+        if not isinstance(other, HtmlNode):
+            return False
+        return self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props
+    
     def __repr__(self):
         return f"HtmlNode(tag={self.tag}, value={self.value}, children={self.children}, props={self.props})"
 
@@ -35,6 +38,9 @@ class LeafNode(HtmlNode):
             
         if self.tag is None:
             return self.value
+        
+        if self.tag in ["img"]:
+            return f"<{self.tag}{self.props_to_html()}>"
 
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
     
