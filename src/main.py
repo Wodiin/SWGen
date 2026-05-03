@@ -1,9 +1,11 @@
 import os
 import shutil
+import createpage
 
 def main():
     create_folder("public")
     copy_folder_and_files("static", "public")
+    createpage.generate_pages_recursive("content", "template.html", "public")
 
 
 def create_folder(folder_name):
